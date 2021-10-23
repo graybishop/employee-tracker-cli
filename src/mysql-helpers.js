@@ -19,13 +19,22 @@ export const startConnection = async () => {
     return connection;
 };
 
-export const pullDepartmentTable = async (connection) => {
-    const [rows] = await connection.execute(`
-    SELECT 
-        dep_name as "Department Name", 
-        id as "Dep ID"
-    FROM departments;`);
-    return rows;
+export const pullDepartmentTable = async (connection, forList) => {
+    if(!forList){
+        const [rows] = await connection.execute(`
+        SELECT 
+            dep_name as "Department Name", 
+            id as "Dep ID"
+        FROM departments;`);
+        return rows;
+    } else{
+        const [rows] = await connection.execute(`
+        SELECT 
+            id as "value",
+            dep_name as "name"
+        FROM departments;`);
+        return rows;
+    }
 };
 
 /**
@@ -39,7 +48,8 @@ export const pullRoleTable = async (connection, forList) => {
         SELECT 
             roles.id AS "Role ID",
             roles.title AS "Role", 
-            departments.dep_name AS "Department Name" 
+            departments.dep_name AS "Department Name",
+            roles.salary AS "Salary" 
         FROM 
             roles 
         INNER JOIN departments on roles.department_id = departments.id;`);
@@ -103,11 +113,9 @@ export const addDepartment = async (connection, newDepartment) => {
 
     const [row] = await connection.execute(`
     SELECT
-        id
+        MAX(id) AS id
     FROM
-        departments
-    WHERE
-        dep_name = ?`,[newDepartment])
+        departments`)
     return row[0].id;
 };
 
@@ -120,13 +128,19 @@ export const addDepartment = async (connection, newDepartment) => {
  * @returns ResultSetHeader
  */
 export const addRole = async (connection, { title, salary, dep_id }) => {
-    const response = await connection.execute(`
+    await connection.execute(`
     INSERT INTO 
         roles (title, salary, department_id)
     VALUES 
         (? , ? , ?)
     `, [title, salary, dep_id]);
-    return response;
+
+    const [row] = await connection.execute(`
+    SELECT
+        MAX(id) AS id
+    FROM
+        roles`)
+    return row[0].id;
 };
 
 /**

@@ -1,9 +1,9 @@
 import inquirer from "inquirer"
-import * as mysqlHelpers from './mysql-helpers.js'
+import * as myQueries from './mysql-helpers.js'
 
 let connection
 const init = async () => {
-    connection = await mysqlHelpers.startConnection()
+    connection = await myQueries.startConnection()
 }
 init()
 
@@ -37,26 +37,29 @@ export const showMainMenu = async () => {
 
     switch (menuChoice) {
         case viewDeps:
-            console.table(await mysqlHelpers.pullDepartmentTable(connection))
+            console.table(await myQueries.pullDepartmentTable(connection))
             showMainMenu()
             break;
         case viewRoles:
-            console.table(await mysqlHelpers.pullRoleTable(connection))
+            console.table(await myQueries.pullRoleTable(connection))
             showMainMenu()
             break;
         case viewEmp:
-            console.table(await mysqlHelpers.pullEmpTable(connection))
+            console.table(await myQueries.pullEmpTable(connection))
             showMainMenu()
             break;
         case addDep:
             showAddDepPrompt()
+            break;
+        case addRole:
+            showAddRolePrompt()
             break;
         case addEmp:
             showAddEmployeePrompt()
             break;
         case quit:
             console.log(`You've Quit`)
-            mysqlHelpers.endConnection(connection)
+            myQueries.endConnection(connection)
             break;
     
         default:
@@ -67,7 +70,7 @@ export const showMainMenu = async () => {
 const showAddDepPrompt = async () => {
 
     console.log(`Okay, here's the departments we have so far:`)
-    console.table(await mysqlHelpers.pullDepartmentTable(connection))
+    console.table(await myQueries.pullDepartmentTable(connection))
 
     const addDepQuestions = [
         {
@@ -79,8 +82,38 @@ const showAddDepPrompt = async () => {
 
     let {departmentName} = await inquirer.prompt(addDepQuestions)
 
-    let id = await mysqlHelpers.addDepartment(connection, departmentName)
+    let id = await myQueries.addDepartment(connection, departmentName)
     console.log(`Great, we've added ${departmentName}. It's ID is ${id}`)
+    showMainMenu()
+    return
+}
+
+const showAddRolePrompt = async () => {
+    console.log(`New Role? Let's begin.`)
+    let departmentArr = await myQueries.pullDepartmentTable(connection, true)
+    const addDepQuestions = [
+        {
+            type: 'input',
+            name: 'title',
+            message: `What's the title?`
+        },
+        {
+            type: 'list',
+            name: 'dep_id',
+            message: 'Which department does it belong to:',
+            choices: departmentArr
+        },
+        {
+            type: 'input',
+            name: 'salary',
+            message: 'Salary?'
+        }
+    ]
+
+    let roleDetails = await inquirer.prompt(addDepQuestions)
+
+    let id = await myQueries.addRole(connection, roleDetails)
+    console.log(`We've added ${roleDetails.title}. Its ID is ${id}.`)
     showMainMenu()
     return
 }
@@ -88,8 +121,8 @@ const showAddDepPrompt = async () => {
 const showAddEmployeePrompt = async () => {
 
     console.log(`Tell us about your new hire.`)
-    let managerArr = await mysqlHelpers.pullEmpTable(connection, true)
-    let rolesArr = await mysqlHelpers.pullRoleTable(connection, true)
+    let managerArr = await myQueries.pullEmpTable(connection, true)
+    let rolesArr = await myQueries.pullRoleTable(connection, true)
     const addDepQuestions = [
         {
             type: 'input',
@@ -117,7 +150,7 @@ const showAddEmployeePrompt = async () => {
 
     let empDetails = await inquirer.prompt(addDepQuestions)
 
-    let id = await mysqlHelpers.addEmployee(connection, empDetails)
+    let id = await myQueries.addEmployee(connection, empDetails)
     console.log(`We've added ${empDetails.fName} ${empDetails.lName}. Their ID is ${id}.`)
     showMainMenu()
     return
