@@ -135,16 +135,22 @@ export const addRole = async (connection, { title, salary, dep_id }) => {
  * @param {*} lName last name
  * @param {*} role_id role id
  * @param {*} manager_id manager id
- * @returns ResultSetHeader
+ * @returns last id inserted into employee table 
  */
 export const addEmployee = async (connection, { fName, lName, role_id, manager_id }) => {
-    const response = await connection.execute(`
+    await connection.execute(`
     INSERT INTO 
         employees (first_name, last_name, role_id, manager_id)
     VALUES 
         ( ?, ?, ?, ? )
     `, [fName, lName, role_id, manager_id]);
-    return response;
+
+    const [row] = await connection.execute(`
+    SELECT
+        MAX(id) AS id
+    FROM
+        employees`)
+    return row[0].id;
 };
 
 export const updateEmpRole = async (connection, empID, newRoleID) => {

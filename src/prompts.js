@@ -117,9 +117,8 @@ const showAddEmployeePrompt = async () => {
 
     let empDetails = await inquirer.prompt(addDepQuestions)
 
-    // let id = await mysqlHelpers.addEmployee(connection, empDetails)
-    let id = 9999999999
-    console.log(`We've added ${empDetails.fName} ${empDetails.lName}. their ID is ${id}`)
+    let id = await mysqlHelpers.addEmployee(connection, empDetails)
+    console.log(`We've added ${empDetails.fName} ${empDetails.lName}. Their ID is ${id}.`)
     showMainMenu()
     return
 }
