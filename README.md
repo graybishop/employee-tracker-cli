@@ -5,7 +5,7 @@
 
 A command-line application to manage a company's employee database. Using inquirer, this CLI presents the information in an employee database (powered by MySQL) in table format. The User can select from the options given to view, add, and modify records in the database easily.
 
-This tool connects to a local MySQL database to pull and abstract queries for the user so that they may track their employee's and company structure. Install with ```npm install``` and start with ```npm start``` to begin. 
+This tool connects to a local MySQL database to pull and abstract queries for the user so that they may track their employee's and company structure. Install with ```npm install``` and start with ```npm start``` to begin.
 
 ## Demo Video
 
