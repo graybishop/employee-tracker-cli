@@ -4,7 +4,11 @@ import cTable from 'console.table';
 
 const DB = 'employee_tracker_db';
 
-const startConnection = async () => {
+/**
+ * creates connection to mysql employee_tracker_db
+ * @returns mysql connection
+ */
+export const startConnection = async () => {
     const connection = await mysql.createConnection(
         {
             host: 'localhost',
@@ -15,7 +19,7 @@ const startConnection = async () => {
     return connection;
 };
 
-const pullDepartmentTable = async (connection) => {
+export const pullDepartmentTable = async (connection) => {
     const [rows] = await connection.execute(`
     SELECT 
         dep_name as "Department Name", 
@@ -24,7 +28,12 @@ const pullDepartmentTable = async (connection) => {
     return rows;
 };
 
-const pullRoleTable = async (connection) => {
+/**
+ * Selects all rows in the role table
+ * @param {*} connection 
+ * @returns table as mysql obj
+ */
+export const pullRoleTable = async (connection) => {
     const [rows] = await connection.execute(`
     SELECT 
         roles.id AS "Role ID",
@@ -36,7 +45,7 @@ const pullRoleTable = async (connection) => {
     return rows;
 };
 
-const pullEmpTable = async (connection) => {
+export const pullEmpTable = async (connection) => {
     const [rows] = await connection.execute(`
     SELECT
         e.id, 
@@ -53,15 +62,15 @@ const pullEmpTable = async (connection) => {
     return rows;
 };
 
-const addDepartment = async (connection, newDepartment) => {
+export const addDepartment = async (connection, newDepartment) => {
     const response = await connection.execute(`
     INSERT INTO 
         departments (dep_name)
     VALUES 
         (?)
-    `, [newDepartment])
-    return response
-}
+    `, [newDepartment]);
+    return response;
+};
 
 /**
  * Adds role to roles table given role definition object
@@ -71,15 +80,15 @@ const addDepartment = async (connection, newDepartment) => {
  * @param {*} dep_id role department
  * @returns ResultSetHeader
  */
-const addRole = async (connection, {title, salary, dep_id}) => {
+export const addRole = async (connection, { title, salary, dep_id }) => {
     const response = await connection.execute(`
     INSERT INTO 
         roles (title, salary, department_id)
     VALUES 
         (? , ? , ?)
-    `, [title, salary, dep_id])
-    return response
-}
+    `, [title, salary, dep_id]);
+    return response;
+};
 
 /**
  * Adds employee to employee table given role definition object
@@ -90,32 +99,32 @@ const addRole = async (connection, {title, salary, dep_id}) => {
  * @param {*} manager_id manager id
  * @returns ResultSetHeader
  */
-const addEmployee = async (connection, {fName, lName, role_id, manager_id}) => {
+export const addEmployee = async (connection, { fName, lName, role_id, manager_id }) => {
     const response = await connection.execute(`
     INSERT INTO 
         employees (first_name, last_name, role_id, manager_id)
     VALUES 
         ( ?, ?, ?, ? )
-    `, [fName, lName, role_id, manager_id])
-    return response
-}
+    `, [fName, lName, role_id, manager_id]);
+    return response;
+};
 
-const updateEmpRole = async (connection, empID, newRoleID) => {
+export const updateEmpRole = async (connection, empID, newRoleID) => {
     const response = await connection.execute(
         `UPDATE 
             employees
         SET 
             role_id = ? 
         WHERE 
-            id = ?;`, [newRoleID, empID])
-    return response
-}
+            id = ?;`, [newRoleID, empID]);
+    return response;
+};
 
-const endConnection = (connection) => {
+export const endConnection = (connection) => {
     connection.end();
 };
 
-const main = async () => {
+export const main = async () => {
     const connection = await startConnection();
 
     let depTable = await pullDepartmentTable(connection);
