@@ -18,7 +18,3 @@ import { showMainMenu } from './src/prompts.js'
 // sqlFuncs.main()
 
 showMainMenu()
-
-process.on('SIGINT', () => {
-      console.log('Process terminated')
-  })

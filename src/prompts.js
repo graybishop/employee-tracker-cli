@@ -48,6 +48,9 @@ export const showMainMenu = async () => {
             console.table(await mysqlHelpers.pullEmpTable(connection))
             showMainMenu()
             break;
+        case addDep:
+            showAddDepPrompt()
+            break;
         case quit:
             console.log(`You've Quit`)
             mysqlHelpers.endConnection(connection)
@@ -58,3 +61,23 @@ export const showMainMenu = async () => {
     }
 }
 
+const showAddDepPrompt = async () => {
+
+    console.log(`Okay, here's the departments we have so far:`)
+    console.table(await mysqlHelpers.pullDepartmentTable(connection))
+
+    const addDepQuestions = [
+        {
+            type: 'input',
+            name: 'departmentName',
+            message: 'What is the name of the new department'
+        }
+    ]
+
+    let {departmentName} = await inquirer.prompt(addDepQuestions)
+
+    let id = await mysqlHelpers.addDepartment(connection, departmentName)
+    console.log(`Great we've added ${departmentName}. It's ID is ${id}`)
+    showMainMenu()
+    return
+}
