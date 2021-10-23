@@ -65,7 +65,7 @@ export const showMainMenu = async () => {
             showUpdateEmpRole()
             break;
         case quit:
-            console.log(`You've Quit`)
+            console.log(`Bye! 👋`)
             myQueries.endConnection(connection)
             break;
     
@@ -163,6 +163,29 @@ const showAddEmployeePrompt = async () => {
     return
 }
 
-const showUpdateEmpRole = () => {
-    
+const showUpdateEmpRole = async () => {
+    let empArr = await myQueries.pullEmpTable(connection, true)
+    let rolesArr = await myQueries.pullRoleTable(connection, true)
+    const addDepQuestions = [
+        {
+            type: 'list',
+            name: 'emp_id',
+            message: 'Which employee needs the update:',
+            choices: empArr
+        },
+        {
+            type: 'list',
+            name: 'role_id',
+            message: 'What is the new role?',
+            choices: rolesArr
+        }
+    ]
+
+    let {emp_id, role_id} = await inquirer.prompt(addDepQuestions)
+
+    let updated = await myQueries.updateEmpRole(connection, emp_id, role_id)
+    console.log(`Got it. Here's that employee updated:`)
+    console.table(updated)
+    showMainMenu()
+    return
 }

@@ -52,12 +52,26 @@ export const addEmployee = async (connection, { fName, lName, role_id, manager_i
 };
 
 export const updateEmpRole = async (connection, empID, newRoleID) => {
-    const response = await connection.execute(
+    await connection.execute(
         `UPDATE 
             employees
         SET 
             role_id = ? 
         WHERE 
             id = ?;`, [newRoleID, empID]);
-    return response;
+    let [employeeInfo] = await connection.execute(`
+    SELECT
+        e.id AS "ID", 
+        CONCAT(e.first_name,' ',e.last_name) AS Name,
+        roles.title, 
+        roles.salary, 
+        departments.dep_name,
+        CONCAT(m.first_name,' ',m.last_name) AS Manager
+    FROM 
+        employees e 
+    INNER JOIN roles ON e.role_id = roles.id 
+    INNER JOIN departments ON roles.department_id = departments.id
+    LEFT JOIN employees m on m.id = e.manager_id
+    WHERE e.id = ?;`, [empID]);
+    return employeeInfo;
 };
