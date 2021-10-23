@@ -1,5 +1,7 @@
 import inquirer from "inquirer"
-import * as myQueries from './mysql-helpers.js'
+import * as myQueries from './sql-connection.js'
+// eslint-disable-next-line no-unused-vars
+import cTable from 'console.table'
 
 let connection
 const init = async () => {
@@ -14,6 +16,7 @@ export const showMainMenu = async () => {
     const addDep = 'Add a Department'
     const addRole = 'Add a Role'
     const addEmp = 'Add an Employee'
+    const updateEmpRole = `Update an Employee's Role`
     const quit = 'Quit'
 
     const mainMenuQuestions = [
@@ -23,11 +26,12 @@ export const showMainMenu = async () => {
             message: 'Main Menu - What do you want to do?',
             choices:[
                 viewDeps,
-                viewRoles,
-                viewEmp,
                 addDep,
+                viewRoles,
                 addRole,
+                viewEmp,
                 addEmp,
+                updateEmpRole,
                 quit
             ]
         }
@@ -56,6 +60,9 @@ export const showMainMenu = async () => {
             break;
         case addEmp:
             showAddEmployeePrompt()
+            break;
+        case updateEmpRole:
+            showUpdateEmpRole()
             break;
         case quit:
             console.log(`You've Quit`)
@@ -154,4 +161,8 @@ const showAddEmployeePrompt = async () => {
     console.log(`We've added ${empDetails.fName} ${empDetails.lName}. Their ID is ${id}.`)
     showMainMenu()
     return
+}
+
+const showUpdateEmpRole = () => {
+    
 }
