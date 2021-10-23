@@ -27,6 +27,7 @@ const pullDepartmentTable = async (connection) => {
 const pullRoleTable = async (connection) => {
     const [rows] = await connection.execute(`
     SELECT 
+        roles.id AS "Role ID",
         roles.title AS "Role", 
         departments.dep_name AS "Department Name" 
     FROM 
@@ -99,6 +100,17 @@ const addEmployee = async (connection, {fName, lName, role_id, manager_id}) => {
     return response
 }
 
+const updateEmpRole = async (connection, empID, newRoleID) => {
+    const response = await connection.execute(
+        `UPDATE 
+            employees
+        SET 
+            role_id = ? 
+        WHERE 
+            id = ?;`, [newRoleID, empID])
+    return response
+}
+
 const endConnection = (connection) => {
     connection.end();
 };
@@ -118,9 +130,12 @@ const main = async () => {
     // await addRole(connection, {title:'IT Guy', salary:30000, dep_id: 3})
     // let rolesTableAfterInsert = await pullRoleTable(connection);
     // console.table(rolesTableAfterInsert);
-    await addEmployee(connection, {fName:'Simon', lName:'Lane', role_id: 5, manager_id: 3})
-    let empTableAfterInsert = await pullEmpTable(connection);
-    console.table(empTableAfterInsert);
+    // await addEmployee(connection, {fName:'Simon', lName:'Lane', role_id: 5, manager_id: 3})
+    // let empTableAfterInsert = await pullEmpTable(connection);
+    // console.table(empTableAfterInsert);
+    // await updateEmpRole(connection, 3, 3)
+    // empTable = await pullEmpTable(connection);
+    // console.table(empTable);
 
     endConnection(connection);
 };
