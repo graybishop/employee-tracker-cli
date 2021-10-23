@@ -110,13 +110,7 @@ export const addDepartment = async (connection, newDepartment) => {
     VALUES 
         (?)
     `, [newDepartment]);
-
-    const [row] = await connection.execute(`
-    SELECT
-        MAX(id) AS id
-    FROM
-        departments`)
-    return row[0].id;
+    return await selectMax(connection, 'departments')
 };
 
 /**
@@ -135,12 +129,7 @@ export const addRole = async (connection, { title, salary, dep_id }) => {
         (? , ? , ?)
     `, [title, salary, dep_id]);
 
-    const [row] = await connection.execute(`
-    SELECT
-        MAX(id) AS id
-    FROM
-        roles`)
-    return row[0].id;
+    return await selectMax(connection, 'roles')
 };
 
 /**
@@ -160,13 +149,17 @@ export const addEmployee = async (connection, { fName, lName, role_id, manager_i
         ( ?, ?, ?, ? )
     `, [fName, lName, role_id, manager_id]);
 
+    return await selectMax(connection, 'employees')
+};
+
+const selectMax = async (connection, table) => {
     const [row] = await connection.execute(`
     SELECT
         MAX(id) AS id
     FROM
-        employees`)
+        ${table}`,)
     return row[0].id;
-};
+}
 
 export const updateEmpRole = async (connection, empID, newRoleID) => {
     const response = await connection.execute(
