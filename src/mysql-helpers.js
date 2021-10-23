@@ -69,7 +69,8 @@ export const pullEmpTable = async (connection, forList) => {
             employees e 
         INNER JOIN roles ON e.role_id = roles.id 
         INNER JOIN departments ON roles.department_id = departments.id
-        LEFT JOIN employees m on m.id = e.manager_id;`);
+        LEFT JOIN employees m on m.id = e.manager_id
+        ORDER BY Name;`);
         return rows;
     } else {
         const [rows] = await connection.execute(`
