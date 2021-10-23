@@ -34,3 +34,20 @@ export const pullDepartmentTable = async (connection, forList) => {
     `, [newDepartment]);
     return await selectMax(connection, 'departments')
 };
+
+export const pullDepBudgets = async (connection) => {
+    let [rows]= await connection.execute(`
+        select 
+            d.dep_name as "Department",
+            sum(r.salary) as "Budget"
+        from
+            departments d 
+        inner join
+            roles r on r.department_id = d.id 
+        inner join 
+            employees e on r.id = e.role_id 
+        group by d.dep_name 
+        order by Budget DESC
+    `)
+    return rows
+}

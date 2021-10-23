@@ -1,5 +1,5 @@
 import mysql from 'mysql2/promise';
-export * from './dep-queries.js';
+export * from './dep-queries.js'
 export * from './roles-queries.js'
 export * from './emp-queries.js'
 
@@ -21,5 +21,4 @@ export const startConnection = async () => {
 
 export const endConnection = (connection) => {
     connection.end();
-};
-
+}; 

@@ -17,6 +17,7 @@ export const showMainMenu = async () => {
     const addRole = 'Add a Role'
     const addEmp = 'Add an Employee'
     const updateEmpRole = `Update an Employee's Role`
+    const depBudget = `Show Department Budgets`
     const quit = 'Quit'
 
     const mainMenuQuestions = [
@@ -32,6 +33,7 @@ export const showMainMenu = async () => {
                 viewEmp,
                 addEmp,
                 updateEmpRole,
+                depBudget,
                 quit
             ]
         }
@@ -63,6 +65,10 @@ export const showMainMenu = async () => {
             break;
         case updateEmpRole:
             showUpdateEmpRole()
+            break;
+        case depBudget:
+            console.table(await myQueries.pullDepBudgets(connection))
+            showMainMenu()
             break;
         case quit:
             console.log(`Bye! 👋`)
