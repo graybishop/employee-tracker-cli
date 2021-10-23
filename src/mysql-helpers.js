@@ -33,16 +33,26 @@ export const pullDepartmentTable = async (connection) => {
  * @param {*} connection 
  * @returns table as mysql obj
  */
-export const pullRoleTable = async (connection) => {
-    const [rows] = await connection.execute(`
-    SELECT 
-        roles.id AS "Role ID",
-        roles.title AS "Role", 
-        departments.dep_name AS "Department Name" 
-    FROM 
-        roles 
-    INNER JOIN departments on roles.department_id = departments.id;`);
-    return rows;
+export const pullRoleTable = async (connection, forList) => {
+    if(!forList){
+        const [rows] = await connection.execute(`
+        SELECT 
+            roles.id AS "Role ID",
+            roles.title AS "Role", 
+            departments.dep_name AS "Department Name" 
+        FROM 
+            roles 
+        INNER JOIN departments on roles.department_id = departments.id;`);
+        return rows;
+    } else {
+        const [rows] = await connection.execute(`
+        SELECT 
+            roles.id AS "value",
+            roles.title AS "name" 
+        FROM 
+            roles;`);
+        return rows;
+    }
 };
 
 export const pullEmpTable = async (connection, forList) => {

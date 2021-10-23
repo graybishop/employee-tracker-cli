@@ -89,6 +89,7 @@ const showAddEmployeePrompt = async () => {
 
     console.log(`Tell us about your new hire.`)
     let managerArr = await mysqlHelpers.pullEmpTable(connection, true)
+    let rolesArr = await mysqlHelpers.pullRoleTable(connection, true)
     const addDepQuestions = [
         {
             type: 'input',
@@ -104,10 +105,7 @@ const showAddEmployeePrompt = async () => {
             type: 'list',
             name: 'role_id',
             message: 'Pick their role:',
-            choices: [
-                'test',
-                'test 3'
-            ]
+            choices: rolesArr
         },
         {
             type: 'list',
