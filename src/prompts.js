@@ -51,6 +51,9 @@ export const showMainMenu = async () => {
         case addDep:
             showAddDepPrompt()
             break;
+        case addEmp:
+            showAddEmployeePrompt()
+            break;
         case quit:
             console.log(`You've Quit`)
             mysqlHelpers.endConnection(connection)
@@ -77,7 +80,48 @@ const showAddDepPrompt = async () => {
     let {departmentName} = await inquirer.prompt(addDepQuestions)
 
     let id = await mysqlHelpers.addDepartment(connection, departmentName)
-    console.log(`Great we've added ${departmentName}. It's ID is ${id}`)
+    console.log(`Great, we've added ${departmentName}. It's ID is ${id}`)
+    showMainMenu()
+    return
+}
+
+const showAddEmployeePrompt = async () => {
+
+    console.log(`Tell us about your new hire.`)
+    let managerArr = await mysqlHelpers.pullEmpTable(connection, true)
+    const addDepQuestions = [
+        {
+            type: 'input',
+            name: 'fName',
+            message: 'What is the First Name of the new employee?'
+        },
+        {
+            type: 'input',
+            name: 'lName',
+            message: 'What is the Last Name of the new employee?'
+        },
+        {
+            type: 'list',
+            name: 'role_id',
+            message: 'Pick their role:',
+            choices: [
+                'test',
+                'test 3'
+            ]
+        },
+        {
+            type: 'list',
+            name: 'manager_id',
+            message: 'Pick their Manager:',
+            choices: managerArr
+        }
+    ]
+
+    let empDetails = await inquirer.prompt(addDepQuestions)
+
+    // let id = await mysqlHelpers.addEmployee(connection, empDetails)
+    let id = 9999999999
+    console.log(`We've added ${empDetails.fName} ${empDetails.lName}. their ID is ${id}`)
     showMainMenu()
     return
 }

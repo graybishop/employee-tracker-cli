@@ -45,21 +45,34 @@ export const pullRoleTable = async (connection) => {
     return rows;
 };
 
-export const pullEmpTable = async (connection) => {
-    const [rows] = await connection.execute(`
-    SELECT
-        e.id, 
-        CONCAT(e.first_name,' ',e.last_name) AS Name,
-        roles.title, 
-        roles.salary, 
-        departments.dep_name,
-        CONCAT(m.first_name,' ',m.last_name) AS Manager
-    FROM 
-        employees e 
-    INNER JOIN roles ON e.role_id = roles.id 
-    INNER JOIN departments ON roles.department_id = departments.id
-    LEFT JOIN employees m on m.id = e.manager_id;`);
-    return rows;
+export const pullEmpTable = async (connection, forList) => {
+    if(!forList){
+        const [rows] = await connection.execute(`
+        SELECT
+            e.id, 
+            CONCAT(e.first_name,' ',e.last_name) AS Name,
+            roles.title, 
+            roles.salary, 
+            departments.dep_name,
+            CONCAT(m.first_name,' ',m.last_name) AS Manager
+        FROM 
+            employees e 
+        INNER JOIN roles ON e.role_id = roles.id 
+        INNER JOIN departments ON roles.department_id = departments.id
+        LEFT JOIN employees m on m.id = e.manager_id;`);
+        return rows;
+    } else {
+        const [rows] = await connection.execute(`
+        SELECT
+            e.id as value, 
+            CONCAT(e.first_name,' ',e.last_name) AS name
+        FROM 
+            employees e 
+        INNER JOIN roles ON e.role_id = roles.id 
+        INNER JOIN departments ON roles.department_id = departments.id
+        LEFT JOIN employees m on m.id = e.manager_id;`);
+        return rows;
+    }
 };
 
 /**
