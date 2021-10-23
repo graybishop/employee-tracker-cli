@@ -9,7 +9,7 @@ This tool connects to a local MySQL database to pull and abstract queries for th
 
 ## Demo Video
 
-Vid Goes Here.
+[![Link to Video](img/demo-vid-thumbnail.png)](https://streamable.com/0y9w9c)
 
 ## Features
 
